@@ -1,8 +1,4 @@
 <?php
-	
-
-		$root =  getcwd();
-
 
 	/* RENDER FUNCTION 
 		takes two parameters, view to render and array of values
@@ -26,13 +22,15 @@
 	/*
 		* REDIRECT FUNCTION
 	*/
-	function redirect($var)
-	{
-		$root =  getcwd();
-		
-		
-		header("Location:{$var}");
-	}
+    function redirect($location)
+    {
+        if (headers_sent($file, $line))
+        {
+            trigger_error("HTTP headers already sent at {$file}:{$line}", E_USER_ERROR);
+        }
+        header("Location: {$location}");
+        exit;
+    }
 	
 	
 	function getLoginURLS()

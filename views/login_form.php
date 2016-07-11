@@ -9,7 +9,6 @@
 					<ul class="nav">
 						<?php $i = 0; foreach($logins as $item):?>
 						<li><a class="btn btn-default" href="<?php echo $logins[$i]["url"] ?>"><?php echo($logins[$i]["name"]);?></a></li><br/>
-						
 						<?php $i++; endforeach;?>
 					</ul>
 				</div>

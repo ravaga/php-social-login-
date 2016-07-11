@@ -9,7 +9,7 @@
 			print_r($_SESSION["access"]);
 		}
 	//if server request is GET
-	if($_SERVER["REQUEST_METHOD"] == "GET" && !empty($_GET["code"]))
+	if($_SERVER["REQUEST_METHOD"] == "GET")
 	{
 		//search for code in get request 
 		$loginCode = getCode($_GET);
@@ -29,7 +29,7 @@
 	}
 	else
 	{
-		redirect("/");
+		redirect("index.php");
 	}
 	
 	
