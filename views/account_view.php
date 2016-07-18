@@ -11,6 +11,8 @@
 						<div class="form-group">
 							<p class="text-center">Username:</p>
 							<input  type="text" class="form-control" placeholder="<?php echo($user["username"]);?>" disabled>
+							<p class="text-center">Email:</p>
+							<input  type="text" class="form-control" placeholder="<?php echo($user["email"]);?>" disabled>
 						</div>
 					</form>
 					<a class="btn btn-success text-center">Update</a>
@@ -19,8 +21,12 @@
 		</div>
 	</div>
 </div>
-<div class="row">
+
+
+<div id="TEST_ROW" class="row">
 	<div class="container">
-		<code><?php print_r($_SESSION["access"])?></code>
+		<code>USER: &nbsp; <?php print_r($user);?></code>
+		<br/><br/>
+		<code>SESSION: &nbsp; <?php print_r($_SESSION["access"])?></code>
 	</div>
 </div>

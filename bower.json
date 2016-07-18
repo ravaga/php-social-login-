@@ -1,0 +1,17 @@
+{
+  "name": "apiplaza",
+  "homepage": "https://github.com/ravaga/plaza.io",
+  "authors": [
+    "Rafa's iMac <rafackyou@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

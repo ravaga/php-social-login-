@@ -1,5 +1,56 @@
 <?php
 
+	
+	require("facebook.api.php");
+	require("instagram.api.php");
+	require("untappd.api.php");
+	require("pinterest.api.php");
+
+
+	
+	/* Get Services from configuration File 
+	
+		* config.json 
+	*/
+	
+	function getConfig($var=[])
+	{
+		//open configuration file
+		$configFile = file_get_contents("config.json");
+		$config_array = json_decode($configFile, true);
+		if($configFile)
+		{
+			$i=0;
+			$config=[];
+			$count = count($var);
+			
+			if($count > 1)
+			{
+				//print_r("{$count} is grater than 0");
+				foreach($var as  $item)
+				{
+					
+					$config[$var[$i++]]= $config_array["config"]["{$item}"];
+				}
+			}
+			else if($count == 1)
+			{
+				$config = $config_array["config"]["{$var[0]}"];
+			}
+			
+			if(!$config)
+				return false;
+	
+			return $config;
+		}
+		else
+		{
+			echo("There's something wrong with config.json");
+			return false;
+		}				
+		
+	}
+	
 	/* RENDER FUNCTION 
 		takes two parameters, view to render and array of values
 	*/
@@ -10,7 +61,6 @@
 		{
 			extract($values);
 			require("views/header.php");
-			require("views/navBar.php");
 			require("views/{$view}");
 			require("views/footer.php");
 		}
@@ -19,6 +69,7 @@
 			require("error.php");
 		}
 	}
+	
 	/*
 		* REDIRECT FUNCTION
 	*/
@@ -32,42 +83,27 @@
         exit;
     }
 	
+	/*  * getLoginURLS()
+		* Generates Login URLS for services inside config.json
+		
+	*/
 	
 	function getLoginURLS()
 	{
-		$configFile = file_get_contents("config.json");
-		$config_array = json_decode($configFile, true);
-		$services = $config_array["config"];
+		//get services from config.json		
+		$services = getConfig(["facebook", "instagram","untappd"]);
 		$i=0;
+		//$count = count($services);
 		$logins = [];
-		foreach($services as $key => $value)
-		{
-				if($key == "untappd")
-				{
-				$logins[$i++] = [
-					"name" => $key,
-					"url" => $value["url"]["login"].
-							 "?client_id=".$value["api"]["key"].
-							 "&response_type=code".
-							 "&redirect_url=".$value["api"]["callback"]
-					];
-				}
-				else if($key == "instagram")
-				{
-					$logins[$i++] = [
-					"name" => $key,
-					"url" => $value["url"]["login"].
-							 "?client_id=".$value["api"]["key"].
-							 "&redirect_uri=".$value["api"]["callback"].
-							 "&response_type=code"
-					];
-				}
-			
+		$count = count($services);
+	
+		foreach($services as $key => $url)
+		{		
+			$login = $key::login();
+			$logins["{$key}"] = $login;	
 		}
 		return $logins;
 	}
-	
-	
 	
 	/*
 		* GET SERVICE & CODE
@@ -77,7 +113,14 @@
 			
 	function getCode($var=[])
 	{
-		//if we dont have login return false
+		/*Test
+		echo("APP function: <br/>");
+		echo("getCode input: \t");
+		print_r($var);
+		echo("<br/>");
+		/*end Test*/
+		
+		
 		if(!$var["login"])
 			return false;
 		//continue	
@@ -120,153 +163,34 @@
 	}
 	/*
 		* GET ACCESS TOKEN
-		* 
-		* expects array with 2 alements
-		* name of service and code
+
 	*/
 	function getToken($var=[])
 	{
+		/*Test
+		echo("APP function: <br/>");
+		echo("getToken input: \t");
+		print_r($var);
+		echo("<br/>");
+		/* end Test*/
+		
+		
 		//if we dont have name and code return false and exit
 		if(count($var) != 2)
 			return false;
 		//continue
-		$serviceName = $var["name"];
-		$serviceCode = $var["code"];
+		$key = $var["name"];
+		$code = $var["code"];
 		
-		//generate token url
-		$tokenUrl = getTokenURL($serviceName, $serviceCode);			
-		
-		//if is instagram do it this way:
-		if($serviceName == "instagram")
-		{
-			
-			$token_curl = curl_init($tokenUrl["url"]);
-			curl_setopt($token_curl, CURLOPT_POST, TRUE);
-			curl_setopt($token_curl, CURLOPT_POSTFIELDS, $tokenUrl["data"]);
-			curl_setopt($token_curl, CURLOPT_RETURNTRANSFER, TRUE);
-			$token_result = curl_exec($token_curl);
-			curl_close($token_curl);
-			
-		}
-		//if it's untappd do it this way.
-		else if($serviceName == "untappd")
-		{
-			$token_curl = curl_init($tokenUrl);
-			curl_setopt($token_curl, CURLOPT_RETURNTRANSFER, TRUE);
-			$token_result = curl_exec($token_curl);
-			curl_close($token_curl);
-		}
-		// error check for token_results
-		if(!$token_result)
-			return false;
-		
-		//decode json result
-		$result_array = json_decode($token_result, true);
-		
-		
-		//search result for access_token
-		$token_key = "access_token";
-		$search = array_key_exists($token_key, $result_array);
-		
-		//yei we found it, wrap session and return
-		if($search)
-		{
-			$access = [
-				"token" => $result_array["access_token"],
-				"service"=> $serviceName
-				];
-			return $access;
-		}
-		//didnt find key on result
-		if(!$search)
-		{
-			//go deeper
-			foreach($result_array as $item)
-			{
-				//check each item for token key
-				$search = array_key_exists($token_key, $item);
+		$token = $key::token($code);
 				
-				if($search)
-				{
-					//yei we found it, wrap in session and return
-					$access = [
-						"token" => $item["access_token"],
-						"service"=> $serviceName
-						];
-					return $access;
-				}
-			}
-		}
+		return $token;
 			
-		else
-		{
-			return false;
-		}	
-		
-	
-	}
-	/*	Generate TOKEN URL
-	*/  
-	
-	function getTokenURL($var, $code)
-	{
-		//get elements from config.json
-		$configFile = file_get_contents("config.json");
-		$config_array = json_decode($configFile, true);
-		$config = $config_array["config"];
-		
-		//check if we have configuration elements for var
-		if(!$config["{$var}"])
-			return false;
-		
-		$client_id = $config["{$var}"]["api"]["key"];
-		$client_secret= $config["{$var}"]["api"]["secret"];
-		$base_url = $config["{$var}"]["url"]["OAuth"];
-		$callback = $config["{$var}"]["api"]["callback"];
-		
-		if($var == "instagram")
-		{
-			$url = [
-			
-			"url" => $base_url.
-				   "?client_id=".$client_id.
-				   "&client_secret=".$client_secret.
-				   "&grant_type=authorization_code".
-				   "&redirect_uri=".$callback.
-				   "&code=".$code.
-				   "&scope=public_content",
-			"data"=>[
-					"client_id"=>$client_id,
-					"client_secret"=>$client_secret,
-					"grant_type"=> "authorization_code",
-					"redirect_uri"=>$callback,
-					"code" => $code
-					]	   
-			 ];  
-		}
-		else if($var == "untappd")
-		{
-			$url = $base_url.
-				   "?client_id=".$client_id.
-				   "&client_secret=".$client_secret.
-				   "&response_type=code".
-				   "&redirect_url=".$callback.
-				   "&code=".$code;
-		}
-
-		
-		return $url;
-
 	}
 	
 	/*
 		* Get user Info
-		
-		* INSTAGRAM END POINT
-		https://api.instagram.com/v1/users/self/?access_token=ACESSTOKENHERE
-		
-		* UNTAPPD END POINT
-		https://api.untappd.com/v4/user/info/?access_token=ACESSTOKENHERE
+
 		
 	*/
 	function getUser($var = [])
@@ -274,51 +198,11 @@
 		if(!$var["service"] || !$var["token"])
 			return false;
 			
-		$service = $var["service"];
+		$key = $var["service"];
 		$token = $var["token"];
 		
-		//get elements from config.json
-		$configFile = file_get_contents("config.json");
-		$config_array = json_decode($configFile, true);
-		$config = $config_array["config"];
-		//
-		if(!$config[$service])
-			return false;
-		
-		//generate user endpoints
-		$url = $config[$service]["endPoints"]["getUser"].$token;
-		
-		//make call
-		$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-		$curl_result = curl_exec($curl);
-		curl_close($curl);
-		
-		$user_array = json_decode($curl_result, true);
-		
-		if($service == "instagram")
-		{
-			$response = $user_array["data"];
+		$user = $key::user($token);	
 			
-			$user = [
-				"loggedIn"=>$service,
-				"token"=> $token,
-				"username"=>$response["username"],
-				"userPic"=>$response["profile_picture"]
-			];
-		}
-		else if($service == "untappd")
-		{
-			$response = $user_array["response"]["user"];
-			
-			$user = [
-				"loggedIn"=>$service,
-				"token"=>$token,
-				"username"=>$response["user_name"],
-				"userPic"=> $response["user_avatar"]
-			];
-		}
-	
 		
 		return $user;
 		

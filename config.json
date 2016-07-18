@@ -3,34 +3,41 @@
 	
 	"instagram" : {
 		"api" : {
-			"key" : "c79ef35c204a4ef5a06944c806d51a49",
-			"secret" : "b6f8b0ead4ad4e2c8cfcce020e25db4e",
-			"callback" : "http://localhost/apiplaza/success.php?login=instagram"
+			"key" : "YOUR_API_KEY",
+			"secret" : "YOUR_CLIENT_SECRET",
+			"callback" : "YOUR_CALLBACK"
 			},
 		"url" : {
 			"login" : "https://api.instagram.com/oauth/authorize/",
 			"OAuth":"https://api.instagram.com/oauth/access_token"
 			},
 		"endPoints":{
-			"getUser": "https://api.instagram.com/v1/users/self/?access_token="
+			"user": "https://api.instagram.com/v1/users/self/?access_token="
 		}
     },
-	
-	"untappd" : {
+    "facebook" : {
 		"api" : {
-			"key" : "223273EE25F5EB9DD58B228EBDF2F57036C3EAA8",
-			"secret" : "EB4608AA503EEA73DF9CC1CE24AD52F7A9C2586B",
-			"callback" : "http://localhost/apiplaza/success.php?login=untappd"
+			"key" : "YOUR_API_KEY",
+			"secret" : "YOUR_CLIENT_SECRET",
+			"callback" : "YOUR_CALLBACK"
+			}
+
+    },
+	
+	"twitter" :  {
+		"api":{
+			"key":"YOUR_API_KEY",
+			"secret":"YOUR_CLIENT_SECRET",
+			"callback":"YOUR_CALLBACK"
 			},
-		"url" : {
+		"url":{
 			"login" : "https://untappd.com/oauth/authenticate/",
 			"OAuth":"https://untappd.com/oauth/authorize/"
 			},
 		"endPoints":{
-			"getUser": "https://api.untappd.com/v4/user/info/?access_token="
+			"user": "https://api.untappd.com/v4/user/info/?access_token="
 			}	
-		}
-	
-		
-}
+		},
+			
+	}
 }

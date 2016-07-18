@@ -4,10 +4,6 @@
 	session_start();
 	require("src/app.functions.php");
 	
-	if(isset($_SESSION["access"]))
-		{
-			print_r($_SESSION["access"]);
-		}
 	//if server request is GET
 	if($_SERVER["REQUEST_METHOD"] == "GET")
 	{
@@ -15,23 +11,24 @@
 		$loginCode = getCode($_GET);
 		//if we didnt find any code apologize	
 		if(!$loginCode)
-			echo("Huston we have a problem with the login code.. ");
+			echo("Huston we have a problem with the login code.. kshh ... over.. ");
 		//we got a code, now get a token
+		
 		$access = getToken($loginCode);
+		/**
+		echo("success access: <br/>");
+		print_r($access);
+		echo("<br/>");
+		/**/
 		
 		if(!$access)
-			echo("Huston we have a problem with the access_token");
+			echo("Huston we have a problem with the access_token.. kshh ... over..");
 		
 		$_SESSION["access"] = $access;
 		
 		redirect("account.php");	
 			
 	}
-	else
-	{
-		redirect("index.php");
-	}
-	
 	
 ?>
 
