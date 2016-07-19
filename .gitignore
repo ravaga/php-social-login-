@@ -1,3 +1,4 @@
 src/fb-sdk-v5/
 bower_components/
-config copy.json
+config.json
+node_modules/

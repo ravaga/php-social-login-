@@ -1,10 +1,9 @@
 <?php
 
-	
-	require("facebook.api.php");
-	require("instagram.api.php");
-	require("untappd.api.php");
-	require("pinterest.api.php");
+	require("apis/facebook.api.php");
+	//require("instagram.api.php");
+	//require("untappd.api.php");
+	//require("pinterest.api.php");
 
 
 	
@@ -91,15 +90,14 @@
 	function getLoginURLS()
 	{
 		//get services from config.json		
-		$services = getConfig(["facebook", "instagram","untappd"]);
+		$services = getConfig(["facebook"]);
 		$i=0;
 		//$count = count($services);
 		$logins = [];
 		$count = count($services);
-	
 		foreach($services as $key => $url)
 		{		
-			$login = $key::login();
+			$login = facebook::login();
 			$logins["{$key}"] = $login;	
 		}
 		return $logins;

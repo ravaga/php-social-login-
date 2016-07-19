@@ -159,14 +159,13 @@ class facebook
 				}
 				
 				$user = [
+					"user_id"=>$userArray["id"],
 					"loggedIn"=>__CLASS__,
-					"token"=>$token,
 					"username"=>$userArray["name"],
 					"email"=>$userArray["email"],
 					"userPic"=> $userPic
 					];
 
-	
 		return $user;
 		
 	}

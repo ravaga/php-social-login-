@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/ravaga/plaza.io/issues"
   },
-  "homepage": "https://github.com/ravaga/plaza.io#readme"
+  "homepage": "https://github.com/ravaga/plaza.io#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.3.2"
+  }
 }

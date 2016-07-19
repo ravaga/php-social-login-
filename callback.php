@@ -1,6 +1,5 @@
 <?php
 	
-	//get instagram configuration file
 	session_start();
 	require("src/app.functions.php");
 	
