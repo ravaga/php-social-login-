@@ -25,7 +25,7 @@
 	//redirect login page
 	//print_r($_SERVER);
 	
-	if (!in_array($_SERVER["PHP_SELF"], ["/apiplaza/login.php", "/apiplaza/logout.php", "/apiplaza/register.php", "/apiplaza/account.php"]))
+	if (!in_array($_SERVER["PHP_SELF"], ["/brewthis/login.php", "/brewthis/logout.php", "/brewthis/register.php", "/brewthis/account.php"]))
 	{
 		if(empty($_SESSION["access"]))
 		{

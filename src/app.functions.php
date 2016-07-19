@@ -6,7 +6,7 @@
 	//require("untappd.api.php");
 	//require("pinterest.api.php");
 
-
+    require("class.upload.php");
 	
 	/* Get Services from configuration File 
 	
@@ -232,7 +232,42 @@
 		
 	}
 	
-	
+	function uploadPicture($var =[])
+    {
+        $handle = new upload($var);
+        if($handle->uploaded)
+        {
+            $path = 'uploads/users/profile_pictures';
+            $img = [
+                "date"=>date('YmdHis'),
+                "type"=>"profile_image",
+                "format"=>$handle->file_src_mime,
+                "user"=>$_SESSION["access"]["username"],
+                "user_ID"=>$_SESSION["access"]["id"],
+                "name"=> $this['type'].".".this["user"].".".this["date"],
+                "route"=> $path."/".this["name"].".".$handle->file_src_name_ext
+            ];
+
+            
+            $handle->file_new_name_body = $img["name"];
+            $handle->image_resize    =   true;
+            $handle->image_x = 100;
+            $handle->image_ratio_y = true;
+            $handle->process($path);
+            
+        }
+        if($handle->processed)
+        {
+            echo("SUCCESS");
+            return true;
+                
+        }
+        else{
+            echo("ERROR UPLOADING IMAGE");
+            return false;
+        }
+        
+    }
 ?>
 
 

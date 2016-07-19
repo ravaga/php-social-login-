@@ -1,33 +1,30 @@
 <div class="row">
-	<div class="container">
-		<div class="panel">
-			<div class="panel-header">
-				<h2 class="text-center"><?php echo($user["username"]);?></h2>
-				<img class="img img-responsive img-circle center-block user_image" src="<? echo($user["userPic"])?>">
-				<!-- The data encoding type, enctype, MUST be specified as below -->
-				<form enctype="multipart/form-data"  method="POST">
-				    <!-- Name of input element determines name in $_FILES array -->
-				    Send this file: <input name="userfile" type="file" />
-				    <input type="submit" value="Send File" />
-				</form>
-			</div>
-			<div class="panel-body">
-				<div class="col-md-4 col-md-offset-4">
-					<form class="form">
-						<div class="form-group">
-							<p class="text-center">Username:</p>
-							<input  type="text" class="form-control" placeholder="<?php echo($user["username"]);?>" disabled>
-							<p class="text-center">Email:</p>
-							<input  type="text" class="form-control" placeholder="<?php echo($user["email"]);?>" disabled>
-						</div>
-					</form>
-					<a class="btn btn-success text-center">Update</a>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="col-md-4 col-md-offset-4">
+        <form class="form" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Profile Picture</label>
+                <img class="img img-circle center-block" src="<?php echo($user["userPic"]);?>">
+                <input type="file" name="profile_picture">
+                <button class="btn btn-primary" type="submit">Change </button>
+            </div>
+        </form>
+    </div>
 </div>
-
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <form method="post" class="form">
+            <div class="form-group">
+                <label for="name">Username</label>
+                <input class="form-control" name="username" value="<?php echo($user["username"]);?>" type="text" disabled>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" name="email" value="<?php echo($user["email"]);?>" type="email" disabled>
+            </div>
+            <button class="btn btn-succcess">Update</button>
+        </form>
+    </div>
+</div>
 
 <div id="TEST_ROW" class="row">
 	<div class="container">
