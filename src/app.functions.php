@@ -1,6 +1,7 @@
 <?php
 
 	require("apis/facebook.api.php");
+	require("apis/self.api.php");
 	//require("instagram.api.php");
 	//require("untappd.api.php");
 	//require("pinterest.api.php");
@@ -117,8 +118,6 @@
 		print_r($var);
 		echo("<br/>");
 		/*end Test*/
-		
-		
 		if(!$var["login"])
 			return false;
 		//continue	
@@ -171,17 +170,13 @@
 		print_r($var);
 		echo("<br/>");
 		/* end Test*/
-		
-		
 		//if we dont have name and code return false and exit
 		if(count($var) != 2)
 			return false;
 		//continue
 		$key = $var["name"];
 		$code = $var["code"];
-		
 		$token = $key::token($code);
-				
 		return $token;
 			
 	}
@@ -193,17 +188,47 @@
 	*/
 	function getUser($var = [])
 	{
+		//print_r($var);
 		if(!$var["service"] || !$var["token"])
 			return false;
-			
 		$key = $var["service"];
 		$token = $var["token"];
-		
-		$user = $key::user($token);	
 			
+			if($token == "self")
+			{
+				$user = $key::user($var);
+			}
+			else
+			{
+				$user = $key::user($token);	
+			}
+			return $user;
 		
-		return $user;
+	}
+	
+	
+	function checkRegister($var = [])
+	{
 		
+		$alert = [];
+		$username = $var["username"];
+		$password = $var["password"];
+		$email = $var["email"];
+		   
+		if(empty($username))
+		{
+			$alert = ["message" => "Username cannot be empty"];
+		}
+		else if(empty($password))
+		{
+			$alert = ["message" =>"Password cannot be empty"];
+		}
+		else if(empty($email))
+		{
+			$alert = ["message" => "Email cannot be empty"];
+		}
+	
+		return $alert;
 		
 	}
 	

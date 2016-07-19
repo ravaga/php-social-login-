@@ -97,6 +97,10 @@ class facebook
 							"token" => (string) $accessToken,
 							"service"=> __CLASS__
 							];	
+				
+				
+				$user = self::user((string)$accessToken);
+				
 							
 				return $access;			
 			}

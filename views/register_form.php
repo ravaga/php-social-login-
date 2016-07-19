@@ -1,3 +1,13 @@
+<?php if($alert):?>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="alert alert-warning alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong>Warning!</strong> <?php echo($alert["message"]);?>
+			</div>
+		</div>
+	</div>
+<?php endif;?>
 <div class="row">
 	<div class="col-md-4 col-md-offset-4">
 	<h1 class="text-center">BrewThis</h1>

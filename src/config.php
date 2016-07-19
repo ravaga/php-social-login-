@@ -4,26 +4,23 @@
 		* Configure que app router
 		* 
 	*/
-	
 
-	
-	//Database Call
-	require("db.php");
-	db::init(__dir__."/db.json");
-	
-	
 	
 	//show all errors and warnings
 	ini_set("display_errors", true);
     error_reporting(E_ALL);
 	
-	//start session
-	session_start();
+	
+	//Database Call
+	require("db.php");
+	db::init(__dir__."/db.json");
 	
 	//include app functions
 	require("app.functions.php");
 	
-
+	
+	
+	session_start();
 	//require authentication for all pages except /login.php, /logout.php, and /register.php
 	//redirect login page
 	//print_r($_SERVER);

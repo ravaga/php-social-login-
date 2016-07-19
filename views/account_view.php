@@ -3,7 +3,13 @@
 		<div class="panel">
 			<div class="panel-header">
 				<h2 class="text-center"><?php echo($user["username"]);?></h2>
-				<img class="img img-responsive img-circle center-block" src="<?php echo($user["userPic"]);?>">
+				<img class="img img-responsive img-circle center-block user_image" src="<? echo($user["userPic"])?>">
+				<!-- The data encoding type, enctype, MUST be specified as below -->
+				<form enctype="multipart/form-data"  method="POST">
+				    <!-- Name of input element determines name in $_FILES array -->
+				    Send this file: <input name="userfile" type="file" />
+				    <input type="submit" value="Send File" />
+				</form>
 			</div>
 			<div class="panel-body">
 				<div class="col-md-4 col-md-offset-4">

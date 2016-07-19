@@ -1,0 +1,33 @@
+.navbar{
+	font-weight: 100;
+	border-radius: 0px;
+	background:rgba(26,104,182,0.87);
+	height:100px;
+	padding-top:20px;
+	.navbar-brand{
+		color:#fff;
+	}
+	.nav{
+		li{
+			a{
+				cursor: pointer;
+				color:#fff;
+				&:hover{
+					background:none;
+				}
+			}
+		}
+	}
+	.user_icon{
+		height: 35px;
+		float:right;
+		padding-left: 10px;
+		
+	}
+	
+}
+
+.user_image{
+	with: 100px;
+	height: 100px;
+}

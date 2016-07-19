@@ -9,70 +9,43 @@
     {
     	$logins = getLoginURLS();
         // else render form
-        render("register_form.php", ["title" => "Log In", "logins"=> $logins]);
+        render("register_form.php", ["title" => "Log In", "logins"=> $logins, "alert" => ""]);
     }
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
 	   
-	   $logins = getLoginURLS(); 
-	   $status = $_POST;
-	   $alert = [];
-	   $username = $status["username"];
-	   $password = $status["password"];
-	   $email = $status["email"];
+	   
+	
 	   
 	   
-	   $checkForm = function($username, $password, $email){
-		   
-		   if(empty($username))
-		   {
-			   $alert = ["message" => "Username cannot be empty"];
-			   return false;
-		   }
-		   else if(empty($password))
-		   {
-			   $alert = ["message" => "Username cannot be empty"];
-			   return false;
-		   }
-		   else if(empty($email))
-		   {
-			   $alert = ["message" => "Username cannot be empty"];
-			   return false;
-		   }
-		   else{
-			   return true;
-		   }
-	   };
-	  
-	  if($checkForm)
-	  {
-		$dbInsert =  db::query("INSERT IGNORE INTO users (username, hash, email, login_status) VALUES(?, ?, ?, ?)", $username, $password, $email,"self");
+	   $logins = getLoginURLS();
+	   
+	   	
+	   $check = checkRegister($_POST);
+	   	
+	   	//field checker has errors
+	   	if(!empty($check))
+	   	{		   
+		   	render("register_form.php", ["title" => "Register", "logins"=> $logins, "alert"=> $check]);
+	   	}
+	   	//no errors continue
+	   	else
+	   	{
+		   	$register = brewThis::register($_POST);
+		   	if(!$register["message"]){
+			   	$_SESSION["access"] = $register;
+			   		redirect("account.php");
+			   	
+		   	}
+		   	else
+		   	{
+			 
+			 render("register_form.php", ["title" => "Register", "logins"=> $logins, "alert"=> $register]);
+ 	
+		   	}
+		   	
+	   	}
 		
-		if($dbInsert)
-		{
-			
-			$_SESSION["access"]= [
-				"service"=>"self",
-				"username"=> $username,
-				"token"=>""
-			];
-			
-			redirect("account.php");
-		}	
-		else
-		{
-			echo("Huston we have a problem storing new user to database... ");
-			render("error.php", ["title"=> "login", "logins"=> $logins, "status"=> $status]);
-		}
-		
-	  } 
-	   
-	   
-	   
-	   
-	    
-	    
-	    
     }
 						
 
