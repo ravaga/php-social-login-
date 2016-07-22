@@ -14,13 +14,8 @@
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
 	   
-	   
-	
-	   
-	   
 	   $logins = getLoginURLS();
 	   
-	   	
 	   $check = checkRegister($_POST);
 	   	
 	   	//field checker has errors

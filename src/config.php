@@ -10,26 +10,24 @@
 	ini_set("display_errors", true);
     error_reporting(E_ALL);
 	
+
 	
-	//Database Call
-	require("db.php");
-	db::init(__dir__."/db.json");
-	
+    session_start();
+    
 	//include app functions
 	require("app.functions.php");
 	
 	
 	
-	session_start();
+	
 	//require authentication for all pages except /login.php, /logout.php, and /register.php
 	//redirect login page
-	//print_r($_SERVER);
 	
-	if (!in_array($_SERVER["PHP_SELF"], ["/brewthis/login.php", "/brewthis/logout.php", "/brewthis/register.php", "/brewthis/account.php"]))
+	if (!in_array($_SERVER["PHP_SELF"], ["/apiplaza/login.php", "/apiplaza/logout.php", "/apiplaza/register.php", "/apiplaza/"]));
 	{
 		if(empty($_SESSION["access"]))
 		{
-			redirect("login.php");
+            redirect("login.php");
 		}
 	}	  
 	

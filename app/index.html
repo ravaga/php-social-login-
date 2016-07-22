@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Project Share</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	   <link rel="stylesheet" href="../assets/style.css" type="text/css">
+	   <script src="https://use.fontawesome.com/e4655edeee.js"></script>
+	
+    </head>
+    <body ng-app="showcase">
+        
+        <nav class="navbar navbar-fixed-top">
+        <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+            
+            <div class="navbar-header">
+                
+            <button type="button" class="navbar-toggle collapsed btn" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="#"><img src="../assets/imgs/logo_min.png" class="img img-responsive logo"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <!-- <button class="sideToggle btn btn-default navbar-btn"><i class="fa fa-bars"></i></button> -->
+            <!--User stuff -->
+            <ul class="nav navbar-nav navbar-left">
+                <li><a>ShowCase</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" role="search" ng-controller="controller">
+                <div class="form-group">
+                    <input type="text" ng-model="query" class="form-control" placeholder="Project Search">
+                </div>
+                <button ng-click="search(query)" class="btn btn-default">Search</button>
+            </form>
+        </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>        
+        
+        
+    <div class="bg_header" style="background:url('https://source.unsplash.com/category/objects');">
+        <div class="icon">
+            <span class="fa-stack fa-5x">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-trophy fa-stack-1x fa-inverse"></i>
+            </span>
+        </div>
+        </div>    
+        <div clas="row">
+            <div clas="container">
+                <div ng-controller="controller">
+                     <div class="col-md-4" ng-model="projects" ng-repeat="project in projects track by $index">
+                        <div class="panel project_panel">
+                            <div clas="panel-header">
+                                <div class="project_header" style="background:url('../{{project.header}}')"></div>
+                                <div class="project_vote">
+                                    <button ng-click="upVote(project.id)" class="btn btn-success fa fa-heart fa-inverse">
+                                    </button>
+                                </div>
+                                <div class="project_title">
+                                    <h3>
+                                        {{project.title}}
+                                    <small>
+                                        {{project.author}}
+                                    </small>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                               <div clas="project_content">
+                                    <p class="text-justify">{{project.brief}}</p>
+                                </div>
+                                <div class="project_votes">
+                                    <p class="text-right">votes:{{project.votes}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{result}}
+            </div>
+        </div>
+    </body>
+</html>
+<script src="../bower_components/angular/angular.js"></script>
+
+<script>
+angular.module('showcase',[])
+  .controller('controller', function ($scope, $http) {
+    
+    
+    var get = function (){
+        
+        $http.get('../all.php').then(function(res){
+            $scope.projects = res.data;
+        return $scope.projects;
+        });  
+    };
+    $scope.projects = get();
+    
+    $scope.upVote = function($var){
+        $http.get('../upVote.php?id='+$var).then(function(res){
+            
+            get();
+        });
+    }; 
+    
+    var search = function($var)
+    {
+       
+        $scope.projects = {};
+        $http.get('../search.php?q='+$var).then(function(res){
+          $scope.data = res.data;
+            
+            $scope.projects.push({"one": res.data});
+        });
+        
+        
+        
+    };
+    
+    
+  
+});
+</script>

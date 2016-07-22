@@ -23,7 +23,6 @@
 			}
 
     },
-	
 	"untappd" :  {
 		"api":{
 			"key":"223273EE25F5EB9DD58B228EBDF2F57036C3EAA8",
@@ -37,21 +36,6 @@
 		"endPoints":{
 			"user": "https://api.untappd.com/v4/user/info/?access_token="
 			}	
-		},
-	"pinterest" :  {
-		"api":{
-			"key":"4846150614463293443",
-			"secret":"c27d40d99f3a428ce5c796805d8f2f9f591a6ddb8623a96a2004142ef38bfa24",
-			"callback":"http://localhost/apiplaza/callback.php?login=pinterest"
-			},
-		"url":{
-			"login" : "https://untappd.com/oauth/authenticate/",
-			"OAuth":"https://untappd.com/oauth/authorize/"
-			},
-		"endPoints":{
-			"user": "https://api.untappd.com/v4/user/info/?access_token="
-			}	
 		}	
-		
 	}
 }

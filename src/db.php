@@ -42,7 +42,7 @@ class db
             // ensure library is initialized
             if (!isset(self::$config))
             {
-                trigger_error("CS50 Library is not initialized", E_USER_ERROR);
+                trigger_error("Database is not initialized", E_USER_ERROR);
             }
 
             // ensure database is configured

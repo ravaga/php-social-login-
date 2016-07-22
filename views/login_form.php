@@ -1,3 +1,4 @@
+<div class="big_background">
 <?php if($alert):?>
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
@@ -9,8 +10,8 @@
 	</div>
 <?php endif;?>
 <div class="row">
-	<div class="col-md-4 col-md-offset-4">
-	<h1 class="text-center">BrewThis</h1>
+	<div class="col-md-4 col-md-offset-4 panel_box">
+	<img src="assets/imgs/logo.png" class="img img-responsive center-block">
 	<p class="text-center">Login</p>
 		<form method="post">
 			<div class="form-group">
@@ -37,5 +38,5 @@
 	</div>
 	
 </div>
-<code>
-</code>
+    
+</div>

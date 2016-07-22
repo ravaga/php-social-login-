@@ -1,7 +1,7 @@
 <?php
 	
-	session_start();
-	require("src/app.functions.php");
+    session_start();
+    require("src/app.functions.php");
 	
 	//if server request is GET
 	if($_SERVER["REQUEST_METHOD"] == "GET")
@@ -13,18 +13,21 @@
 			echo("Huston we have a problem with the login code.. kshh ... over.. ");
 		//we got a code, now get a token
 		
-		$access = getToken($loginCode);
-		/**
-		echo("success access: <br/>");
-		print_r($access);
-		echo("<br/>");
-		/**/
+		$fbaccess = getToken($loginCode);
+		//print_r($access);
 		
-		if(!$access)
+		if(!$fbaccess)
 			echo("Huston we have a problem with the access_token.. kshh ... over..");
 		
-		$_SESSION["access"] = $access;
-		
+        $user = userSearch($fbaccess);
+        
+		$_SESSION["access"] = [
+					"id"=>$user["user_id"],
+					"username"=>$user["username"],
+                    "service"=>"facebook",
+                    "token"=> $_SESSION["facebook_access_token"]
+					];
+        
 		redirect("account.php");	
 			
 	}

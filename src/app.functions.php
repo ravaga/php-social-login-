@@ -1,12 +1,14 @@
 <?php
 
-	require("apis/facebook.api.php");
-	require("apis/self.api.php");
-	//require("instagram.api.php");
-	//require("untappd.api.php");
-	//require("pinterest.api.php");
+    //Database Call
+	require("db.php");
+	db::init(__dir__."/db.json");
 
-    require("class.upload.php");
+
+	require("classes/self.class.php");
+	require("classes/facebook/facebook.class.php");
+    require("classes/instagram/instagram.class.php");
+    require("classes/upload/class.upload.php");
 	
 	/* Get Services from configuration File 
 	
@@ -91,14 +93,14 @@
 	function getLoginURLS()
 	{
 		//get services from config.json		
-		$services = getConfig(["facebook"]);
+		$services = getConfig(["facebook", "instagram"]);
 		$i=0;
 		//$count = count($services);
 		$logins = [];
 		$count = count($services);
 		foreach($services as $key => $url)
 		{		
-			$login = facebook::login();
+			$login = $key::login();
 			$logins["{$key}"] = $login;	
 		}
 		return $logins;
@@ -164,12 +166,7 @@
 	*/
 	function getToken($var=[])
 	{
-		/*Test
-		echo("APP function: <br/>");
-		echo("getToken input: \t");
-		print_r($var);
-		echo("<br/>");
-		/* end Test*/
+
 		//if we dont have name and code return false and exit
 		if(count($var) != 2)
 			return false;
@@ -231,35 +228,89 @@
 		return $alert;
 		
 	}
+
+
+    function imageCheck($var = [])
+    {
+        if($var != NULL)
+        {
+            
+            foreach($var as $key=>$value)
+            {
+                if($value["error"] == 0)
+                {
+                    $handle = uploadPicture($value, $key);
+                    if($handle)
+                    {
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+            }
+        }    
+    }
 	
-	function uploadPicture($var =[])
+	function uploadPicture($var =[], $foo)
     {
         $handle = new upload($var);
         if($handle->uploaded)
         {
-            $path = 'uploads/users/profile_pictures';
+            $path = 'uploads/users/'.$foo;
+            $date = date('YmdHis');
+            $user = $_SESSION["access"];
+            $username = preg_replace('/\s+/', '', $user["username"]);
             $img = [
-                "date"=>date('YmdHis'),
-                "type"=>"profile_image",
+                "date"=>$date,
+                "type"=> $foo,
                 "format"=>$handle->file_src_mime,
-                "user"=>$_SESSION["access"]["username"],
-                "user_ID"=>$_SESSION["access"]["id"],
-                "name"=> $this['type'].".".this["user"].".".this["date"],
-                "route"=> $path."/".this["name"].".".$handle->file_src_name_ext
+                "user"=>$user["username"],
+                "user_ID"=>$user["id"],
+                "name"=> $foo.".".$username.".".$date,
+                "route"=> $path."/".$foo.".".$username.".".$date.".".$handle->file_src_name_ext
             ];
-
             
+            // Set Dimensions
+            $x = 0; $y = 0;
+            if($foo == "project_thumbnail")
+            {
+                $x = 150; $y = 150;
+            }
+            else if($foo == "project_header")
+            {
+                $x = 800; $y = 350;
+            }
+            else if($foo == "profile_picture")
+            {
+                $x = 250; $y = 250;
+            }
+            else if($foo == "profile_header")
+            {
+                $x = 800; $y = 350;
+            }
+            //
+                
             $handle->file_new_name_body = $img["name"];
-            $handle->image_resize    =   true;
-            $handle->image_x = 100;
-            $handle->image_ratio_y = true;
+            $handle->image_resize		= true;
+			$handle->image_ratio_crop	= true;
+			$handle->image_y			= $y;
+			$handle->image_x			= $x;
             $handle->process($path);
-            
         }
         if($handle->processed)
         {
-            echo("SUCCESS");
-            return true;
+            $dbSave = brewThis::saveImage($img);
+            if($dbSave)
+            {
+	            echo("IMAGE SAVED");
+	            return $img;
+            }
+            else
+            {
+	            echo("ERROR SAVING IMAGE TO DATABASE <br/>");
+	            return false;
+            }
                 
         }
         else{
@@ -268,6 +319,75 @@
         }
         
     }
+
+
+    function check_project_fields($var=[])
+    {
+        if($var == NULL)
+            return false;
+        foreach($var as $key => $value)
+        {
+            if(empty($value))
+            {
+                echo($key." cannot be empty sorry...");
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    function uploadProject($var=[])
+    {
+        if($var == NULL)
+            return false;
+        
+        $thumbnail = uploadPicture($var["images"]["thumbnail"], "project_thumbnail");
+        $header = uploadPicture($var["images"]["thumbnail"],"project_header");
+        $info = $var["data"];
+        
+    /// pass this into class self function 
+       $save =  db::query("INSERT INTO projects(title,type,brief,content,author,user_ID, thumbnail, header) VALUES(?,?,?,?,?,?,?,?)",$info["title"], $info["type"], $info["brief"], $info["content"], $info["author"], $info["user_ID"], $thumbnail["route"], $header["route"] );
+        
+    }
+    
+
+    function myProjects()
+    {
+        
+        $user_ID = $_SESSION["access"]["id"];
+        $username = $_SESSION["access"]["username"];
+       
+        
+    //pass this into class self function
+        $projects = db::query("SELECT * FROM projects WHERE user_ID = ? AND author =?", $user_ID, $username);
+        
+        return $projects;
+        
+        
+    }
+    
+    function userSearch($var = [])
+    {
+        $user = facebook::user($var["token"]);
+        echo("<pre>");
+        print_r($user);
+        echo("</pre>");
+        $check = brewThis::userSearch("email", $user["email"]);
+    
+        if(!$check)
+        {
+            $register = brewThis::newfbUser($user);
+            if($register)
+            {
+                return $user;
+            }
+        }else{
+            return $user;
+        }    
+    }
+    
+
+
 ?>
 
 
